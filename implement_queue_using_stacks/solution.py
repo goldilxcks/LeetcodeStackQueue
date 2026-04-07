@@ -33,15 +33,22 @@ class MyQueue:
     def pop(self) -> int:
         """Removes the element from the front of the queue and returns it"""
         if self.end_stack.is_empty():
-            while not self.start_stack.is_empty():
+            while True:
+                if self.start_stack.is_empty():
+                    break
                 self.end_stack.push(self.start_stack.pop())
         return self.end_stack.pop()
     def peek(self) -> int:
         """Returns the element at the front of the queue."""
-        if self.end_stack.is_empty():
-            while not self.start_stack.is_empty():
-                self.end_stack.push(self.start_stack.pop())
-        return self.end_stack.peek()
+        if not self.end_stack.is_empty():
+            return self.end_stack.peek()
+        new_stack = Stack()
+        while not self.start_stack.is_empty():
+            new_stack.push(self.start_stack.pop())
+        val = new_stack.peek()
+        while not new_stack.is_empty():
+            self.start_stack.push(new_stack.pop())
+        return val
     def empty(self) -> bool:
         """Returns true if the queue is empty, false otherwise."""
         return self.start_stack.is_empty() and self.end_stack.is_empty()
